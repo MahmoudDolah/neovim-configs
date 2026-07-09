@@ -1,23 +1,10 @@
 -- ============================================================
 -- plugins/mason.lua
--- Mason UI and core setup. Server installation and lspconfig
--- wiring is handled in lsp.lua via mason-lspconfig.
--- Open with :Mason
+-- Mason is configured and set up inside lsp.lua.
+-- This file intentionally left as a no-op placeholder so the
+-- file structure stays consistent. If you ever split LSP into
+-- separate files, move the mason setup here.
 -- ============================================================
 
-return {
-  "williamboman/mason.nvim",
-  build = ":MasonUpdate",
-  config = function()
-    require("mason").setup({
-      ui = {
-        border = "rounded",
-        icons = {
-          package_installed   = "✓",
-          package_pending     = "➜",
-          package_uninstalled = "✗",
-        },
-      },
-    })
-  end,
-}
+return {}
+

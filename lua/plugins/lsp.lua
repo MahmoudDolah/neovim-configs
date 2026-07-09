@@ -1,6 +1,8 @@
 -- ============================================================
 -- plugins/lsp.lua
 -- Language server setup for Python (Pyright + Ruff)
+-- Uses native vim.lsp.config API (Neovim 0.11+)
+-- No nvim-lspconfig needed.
 --
 -- Keymaps (active only when LSP is attached to a buffer):
 --   gd            — go to definition
@@ -18,56 +20,62 @@
 
 return {
   {
-    "williamboman/mason-lspconfig.nvim",
-    dependencies = {
-      "williamboman/mason.nvim",
-      "neovim/nvim-lspconfig",
-    },
+    "williamboman/mason.nvim",
+    -- mason-lspconfig not needed — we configure servers natively
+    build = ":MasonUpdate",
     config = function()
-      require("mason-lspconfig").setup({
-        ensure_installed = {
-          "pyright",  -- type checking + navigation
-          "ruff",     -- linting + formatting
+      require("mason").setup({
+        ui = {
+          border = "rounded",
+          icons = {
+            package_installed   = "✓",
+            package_pending     = "➜",
+            package_uninstalled = "✗",
+          },
         },
-        automatic_installation = true,
       })
 
-      local lspconfig = require("lspconfig")
+      -- ── Keymaps on attach ─────────────────────────────────
+      vim.api.nvim_create_autocmd("LspAttach", {
+        group = vim.api.nvim_create_augroup("UserLspKeymaps", { clear = true }),
+        callback = function(event)
+          local map = vim.keymap.set
+          local bufnr = event.buf
+          local o = function(desc)
+            return { noremap = true, silent = true, buffer = bufnr, desc = desc }
+          end
 
-      -- ── Shared on_attach ─────────────────────────────────
-      -- Runs every time a language server attaches to a buffer.
-      -- Keymaps only activate when a server is running for the file.
-      local on_attach = function(_, bufnr)
-        local map = vim.keymap.set
-        local o = function(desc)
-          return { noremap = true, silent = true, buffer = bufnr, desc = desc }
-        end
+          -- Navigation
+          map("n", "gd", vim.lsp.buf.definition,     o("Go to definition"))
+          map("n", "gD", vim.lsp.buf.declaration,    o("Go to declaration"))
+          map("n", "gr", vim.lsp.buf.references,     o("References"))
+          map("n", "gi", vim.lsp.buf.implementation, o("Go to implementation"))
 
-        -- Navigation
-        map("n", "gd", vim.lsp.buf.definition,     o("Go to definition"))
-        map("n", "gD", vim.lsp.buf.declaration,    o("Go to declaration"))
-        map("n", "gr", vim.lsp.buf.references,     o("References"))
-        map("n", "gi", vim.lsp.buf.implementation, o("Go to implementation"))
+          -- Information
+          map("n", "K",          vim.lsp.buf.hover,          o("Hover docs"))
+          map("n", "<leader>ls", vim.lsp.buf.signature_help, o("Signature help"))
 
-        -- Information
-        map("n", "K",           vim.lsp.buf.hover,          o("Hover docs"))
-        map("n", "<leader>ls",  vim.lsp.buf.signature_help, o("Signature help"))
+          -- Actions
+          map("n", "<leader>rn", vim.lsp.buf.rename,      o("Rename symbol"))
+          map("n", "<leader>ca", vim.lsp.buf.code_action, o("Code action"))
+          map("n", "<leader>lf", function()
+            vim.lsp.buf.format({ async = true })
+          end, o("Format file"))
 
-        -- Actions
-        map("n", "<leader>rn", vim.lsp.buf.rename,       o("Rename symbol"))
-        map("n", "<leader>ca", vim.lsp.buf.code_action,  o("Code action"))
-        map("n", "<leader>lf", function()
-          vim.lsp.buf.format({ async = true })
-        end, o("Format file"))
+          -- Diagnostics
+          map("n", "<leader>ld", vim.diagnostic.open_float, o("Line diagnostics"))
+          map("n", "[d",         vim.diagnostic.goto_prev,  o("Previous diagnostic"))
+          map("n", "]d",         vim.diagnostic.goto_next,  o("Next diagnostic"))
 
-        -- Diagnostics
-        map("n", "<leader>ld", vim.diagnostic.open_float, o("Line diagnostics"))
-        map("n", "[d",         vim.diagnostic.goto_prev,  o("Previous diagnostic"))
-        map("n", "]d",         vim.diagnostic.goto_next,  o("Next diagnostic"))
-      end
+          -- Disable hover for Ruff in favor of Pyright's richer docs
+          local client = vim.lsp.get_client_by_id(event.data.client_id)
+          if client and client.name == "ruff" then
+            client.server_capabilities.hoverProvider = false
+          end
+        end,
+      })
 
       -- ── Shared capabilities ───────────────────────────────
-      -- Extends default LSP capabilities with nvim-cmp's completion data
       local capabilities = vim.tbl_deep_extend(
         "force",
         vim.lsp.protocol.make_client_capabilities(),
@@ -75,8 +83,7 @@ return {
       )
 
       -- ── Pyright ───────────────────────────────────────────
-      lspconfig.pyright.setup({
-        on_attach = on_attach,
+      vim.lsp.config("pyright", {
         capabilities = capabilities,
         settings = {
           python = {
@@ -91,25 +98,23 @@ return {
       })
 
       -- ── Ruff ──────────────────────────────────────────────
-      lspconfig.ruff.setup({
-        on_attach = function(client, bufnr)
-          -- Disable hover in favor of Pyright's richer docs
-          client.server_capabilities.hoverProvider = false
-          on_attach(client, bufnr)
-        end,
+      vim.lsp.config("ruff", {
         capabilities = capabilities,
       })
+
+      -- Enable both servers
+      vim.lsp.enable({ "pyright", "ruff" })
 
       -- ── Diagnostic display ────────────────────────────────
       vim.diagnostic.config({
         virtual_text = true,
         signs = true,
         underline = true,
-        update_in_insert = false,  -- only show diagnostics in normal mode
+        update_in_insert = false,
         severity_sort = true,
         float = {
           border = "rounded",
-          source = true,           -- show which server reported the issue
+          source = true,
         },
       })
     end,
