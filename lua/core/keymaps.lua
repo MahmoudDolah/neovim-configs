@@ -11,6 +11,9 @@ local opts = { noremap = true, silent = true }
 -- Clear search highlights
 map("n", "<Esc>", "<cmd>noh<CR>", opts)
 
+-- jj to exit insert mode
+map("i", "jj", "<Esc>", opts)
+
 -- Save
 map("n", "<leader>w", "<cmd>w<CR>", opts)
 
@@ -62,11 +65,9 @@ map("n", "<C-d>", "<C-d>zz", opts)
 map("n", "<C-u>", "<C-u>zz", opts)
 
 -- ── File tree (nvim-tree) ───────────────────────────────────
--- Full keymap defined in plugins/nvim-tree.lua
 map("n", "<leader>e", "<cmd>NvimTreeToggle<CR>", opts)
 
 -- ── Telescope ──────────────────────────────────────────────
--- Full keymap defined in plugins/telescope.lua
 map("n", "<leader>ff", "<cmd>Telescope find_files<CR>", opts)
 map("n", "<leader>fg", "<cmd>Telescope live_grep<CR>", opts)
 map("n", "<leader>fb", "<cmd>Telescope buffers<CR>", opts)

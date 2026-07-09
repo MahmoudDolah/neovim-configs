@@ -10,10 +10,10 @@ return {
   config = function()
     require("lualine").setup({
       options = {
-        theme = "tokyonight", -- matches colorscheme; change if you swap themes
+        theme = "tokyonight",
         component_separators = { left = "", right = "" },
         section_separators = { left = "", right = "" },
-        globalstatus = true,   -- single statusline across all splits
+        globalstatus = true,
         disabled_filetypes = {
           statusline = { "NvimTree" },
         },
@@ -24,7 +24,7 @@ return {
         lualine_c = {
           {
             "filename",
-            path = 1, -- 0 = just filename, 1 = relative, 2 = absolute
+            path = 1,
             symbols = {
               modified = " ●",
               readonly = " 🔒",

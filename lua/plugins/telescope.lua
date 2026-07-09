@@ -2,7 +2,7 @@
 -- plugins/telescope.lua
 -- Fuzzy finder — files, grep, buffers, help.
 -- Requires: ripgrep (rg) for live_grep
--- Install: https://github.com/BurntSushi/ripgrep
+-- Install: sudo apt install ripgrep
 -- ============================================================
 
 return {
@@ -15,7 +15,6 @@ return {
       "nvim-telescope/telescope-fzf-native.nvim",
       build = "make",
       cond = function()
-        -- Only load if make is available
         return vim.fn.executable("make") == 1
       end,
     },
@@ -26,7 +25,6 @@ return {
 
     telescope.setup({
       defaults = {
-        -- File patterns to always ignore
         file_ignore_patterns = {
           "%.git/",
           "node_modules/",
@@ -35,7 +33,6 @@ return {
           "%.pyc",
           ".terraform/",
         },
-        -- Open results in current window by default
         mappings = {
           i = {
             ["<C-k>"] = actions.move_selection_previous,
@@ -44,7 +41,6 @@ return {
             ["<Esc>"] = actions.close,
           },
         },
-        -- Slightly more breathing room in the picker
         layout_config = {
           horizontal = {
             preview_width = 0.55,
@@ -53,12 +49,11 @@ return {
       },
       pickers = {
         find_files = {
-          hidden = true,  -- show dotfiles
+          hidden = true,
         },
       },
     })
 
-    -- Load fzf native sorter if available
     pcall(telescope.load_extension, "fzf")
   end,
 }

@@ -1,10 +1,10 @@
 -- ============================================================
 -- plugins/nvim-tree.lua
 -- File explorer sidebar.
--- Toggle: <leader>e (defined in keymaps.lua)
+-- Toggle: <leader>e
 -- ============================================================
 
--- Disable netrw — nvim-tree should own file browsing
+-- Disable netrw — nvim-tree owns file browsing
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
@@ -20,7 +20,7 @@ return {
         side = "left",
       },
       renderer = {
-        group_empty = true,  -- collapse single-child directories
+        group_empty = true,
         highlight_git = true,
         icons = {
           show = {
@@ -31,22 +31,21 @@ return {
         },
       },
       filters = {
-        dotfiles = false,  -- show dotfiles
+        dotfiles = false,
         custom = { "^.git$" },
       },
       git = {
         enable = true,
-        ignore = false,  -- show git-ignored files (dimmed)
+        ignore = false,
       },
       actions = {
         open_file = {
-          quit_on_open = false,  -- keep tree open after opening a file
+          quit_on_open = false,
           window_picker = {
             enable = true,
           },
         },
       },
-      -- Auto-close tree when it's the last window
       on_attach = function(bufnr)
         local api = require("nvim-tree.api")
         local opts = function(desc)
@@ -59,10 +58,8 @@ return {
           }
         end
 
-        -- Default mappings
         api.config.mappings.default_on_attach(bufnr)
 
-        -- Additional / override mappings
         vim.keymap.set("n", "l", api.node.open.edit, opts("Open"))
         vim.keymap.set("n", "h", api.node.navigate.parent_close, opts("Close Directory"))
         vim.keymap.set("n", "H", api.tree.collapse_all, opts("Collapse All"))

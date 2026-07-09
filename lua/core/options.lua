@@ -22,16 +22,17 @@ opt.autoindent = true
 -- Search
 opt.ignorecase = true  -- case-insensitive by default
 opt.smartcase = true   -- case-sensitive if uppercase used
-opt.hlsearch = true    -- highlight matches
+opt.hlsearch = true    -- highlight matches (cleared with <Esc>)
 opt.incsearch = true   -- show matches as you type
 
 -- Appearance
 opt.termguicolors = true  -- full color support
 opt.signcolumn = "yes"    -- always show gutter (avoids layout shifts)
 opt.cursorline = true     -- highlight current line
-opt.scrolloff = 8         -- keep 8 lines above/below cursor
+opt.scrolloff = 999       -- keep cursor vertically centered
 opt.sidescrolloff = 8
-opt.wrap = false          -- no line wrapping
+opt.wrap = true           -- wrap long lines
+opt.linebreak = true      -- wrap at word boundaries, not mid-word
 opt.colorcolumn = "88"    -- PEP 8 + black default column guide
 
 -- Splits

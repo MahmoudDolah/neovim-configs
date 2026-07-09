@@ -1,6 +1,6 @@
 -- ============================================================
 -- init.lua — entry point
--- Bootstraps lazy.nvim, loads core settings and plugins
+-- Bootstraps lazy.nvim and loads core settings and plugins
 -- ============================================================
 
 -- Core settings (options + keymaps load before plugins)

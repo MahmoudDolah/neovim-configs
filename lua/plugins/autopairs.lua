@@ -1,8 +1,6 @@
 -- ============================================================
 -- plugins/autopairs.lua
 -- Auto-closes brackets, parens, quotes.
--- When LSP/cmp is added later, enable the cmp integration
--- by uncommenting the cmp block at the bottom.
 -- ============================================================
 
 return {
@@ -12,14 +10,14 @@ return {
     local autopairs = require("nvim-autopairs")
 
     autopairs.setup({
-      check_ts = true,    -- use treesitter to avoid pairing inside strings/comments
+      check_ts = true,
       ts_config = {
         python = { "string", "source" },
         lua = { "string" },
       },
       disable_filetype = { "TelescopePrompt" },
       fast_wrap = {
-        map = "<M-e>",   -- Alt+e to wrap selection in a pair
+        map = "<M-e>",
         chars = { "{", "[", "(", '"', "'" },
         pattern = [=[[%'%"%>%]%)%}%,]]=],
         offset = 0,
@@ -31,11 +29,9 @@ return {
       },
     })
 
-    -- ── Future: cmp integration ────────────────────────────
-    -- Uncomment when you add nvim-cmp:
-    --
-    -- local cmp_autopairs = require("nvim-autopairs.completion.cmp")
-    -- local cmp = require("cmp")
-    -- cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
+    -- cmp integration — inserts closing pair on completion confirm
+    local cmp_autopairs = require("nvim-autopairs.completion.cmp")
+    local cmp = require("cmp")
+    cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
   end,
 }
