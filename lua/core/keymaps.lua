@@ -43,6 +43,11 @@ map("n", "<leader>bn", "<cmd>bnext<CR>", opts)      -- next buffer
 map("n", "<leader>bp", "<cmd>bprevious<CR>", opts)  -- previous buffer
 map("n", "<leader>bd", "<cmd>bdelete<CR>", opts)    -- delete buffer
 
+-- Jump to buffer N by its position in the bufferline tab bar
+for i = 1, 9 do
+  map("n", "<leader>" .. i, "<cmd>BufferLineGoToBuffer " .. i .. "<CR>", opts)
+end
+
 -- ── Editing ────────────────────────────────────────────────
 
 -- Stay in visual mode after indent

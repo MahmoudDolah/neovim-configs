@@ -39,6 +39,7 @@ Open Neovim — lazy.nvim will bootstrap itself and install all plugins on first
         ├── nvim-tree.lua     # File explorer
         ├── treesitter.lua    # Syntax + text objects
         ├── lualine.lua       # Statusline
+        ├── bufferline.lua    # Buffer tab bar
         ├── autopairs.lua     # Auto-close brackets/quotes
         ├── comment.lua       # gcc / gc commenting
         └── mason.lua         # LSP installer (stub, ready to expand)
@@ -69,11 +70,14 @@ Open Neovim — lazy.nvim will bootstrap itself and install all plugins on first
 
 ### Buffers
 
+Open buffers are shown as a tab bar at the top of the screen (bufferline.nvim).
+
 | Key | Action |
 |---|---|
 | `<leader>bn` | Next buffer |
 | `<leader>bp` | Previous buffer |
 | `<leader>bd` | Delete buffer |
+| `<leader>1` … `<leader>9` | Jump to buffer by its position in the tab bar |
 
 ### File Explorer (nvim-tree)
 
